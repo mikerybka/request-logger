@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -9,8 +10,6 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
-
-	"github.com/mikerybka/util"
 )
 
 // LogEntry represents the structure of the logged request
@@ -33,8 +32,17 @@ func (e *LogEntry) Write(dir string) error {
 	return os.WriteFile(path, b, os.ModePerm)
 }
 
+func requireEnvVar(name string) string {
+	v := os.Getenv(name)
+	if v == "" {
+		fmt.Println(name, "required")
+		os.Exit(1)
+	}
+	return v
+}
+
 func main() {
-	logDir := util.RequireEnvVar("LOG_DIR")
+	logDir := requireEnvVar("LOG_DIR")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Read the request body
 		bodyBytes, err := io.ReadAll(r.Body)
@@ -62,6 +70,6 @@ func main() {
 		}
 	})
 
-	addr := ":" + util.RequireEnvVar("PORT")
+	addr := ":" + requireEnvVar("PORT")
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
