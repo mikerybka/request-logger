@@ -18,7 +18,7 @@ type LogEntry struct {
 	Method    string      `json:"method"`
 	Header    http.Header `json:"header"`
 	Host      string      `json:"host"`
-	URL       string      `json:"url"`
+	Path      string      `json:"path"`
 	Body      string      `json:"body"`
 }
 
@@ -58,7 +58,7 @@ func main() {
 			Method:    r.Method,
 			Header:    r.Header,
 			Host:      r.Host,
-			URL:       r.URL.String(),
+			Path:      r.URL.String(),
 			Body:      string(bodyBytes),
 		}
 
